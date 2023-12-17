@@ -7,19 +7,19 @@ public class Kromosom {
     public int[][] urutan;
     public int[] tempMasuk;
     // public int[] idTipe;
-    public Kromosom(int total, int[] prodPerTipe) {
+    public Kromosom(int total /*,int[] prodPerTipe*/) {
         this.kromosom = new int[total];
         // this.idTipe = new int[total];
 
-        int counter = 0;
-        for (int i = 0; i < prodPerTipe.length; i++) {
-            for (int j = 0; j < prodPerTipe[i]; j++) {
-                // this.kromosom[counter] = this.tipeMobil[i];
-                this.kromosom[counter] = counter;
-                // this.idTipe[counter] = i;
-                counter++;
-            }
-        }
+        // int counter = 0;
+        // for (int i = 0; i < prodPerTipe.length; i++) {
+        //     for (int j = 0; j < prodPerTipe[i]; j++) {
+        //         // this.kromosom[counter] = this.tipeMobil[i];
+        //         this.kromosom[counter] = counter;
+        //         // this.idTipe[counter] = i;
+        //         counter++;
+        //     }
+        // }
         Random rn = new Random();
         for (int i = this.kromosom.length - 1; i > 0; i--) {
             int index = rn.nextInt(i + 1);
@@ -31,6 +31,6 @@ public class Kromosom {
     public void hitungFitnessKromosom(){
 
     }
-    
+
 
 }
