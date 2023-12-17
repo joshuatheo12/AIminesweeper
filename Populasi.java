@@ -24,9 +24,20 @@ public class Populasi {
         this.kromTerbaik2 = this.kromosom[terbaikKeduaIndex];
     }
     public int cariIndexKromosomTerburuk(){
-        return 0;
+        int terburuk=Integer.MAX_VALUE;
+        int indexTerburuk=0;
+        for(int i=0;i<this.kromosom.length;i++){
+            if(terburuk>= this.kromosom[i].gagal){
+                terburuk=this.kromosom[i].gagal;
+                indexTerburuk=i;
+            }
+        }
+        return indexTerburuk;
     }
     public void hitungFitness(){
-        
+        for(Kromosom krom : this.kromosom){
+            krom.hitungFitnessKromosom();
+        }
+        cariDuaKromosomTerbaik();
     }
 }
