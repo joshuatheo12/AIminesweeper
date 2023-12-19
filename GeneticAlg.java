@@ -3,12 +3,13 @@ public class GeneticAlg {
     public Populasi populasi = new Populasi();
     public Kromosom kromTerbaik, kromTerbaikKedua;
     private double crossoverRate, mutationRate;
-    private int generationCount = 0;
+    public int generationCount = 0;
+    private int[][] mosaic;
     
-    public void selection(int[] mobilKerja, int[] mobilMasuk, int[][] matriksTipeOption) {
-    this.populasi.hitungFitness();
-    this.kromTerbaik = this.populasi.kromTerbaik;
-    this.kromTerbaikKedua = this.populasi.kromTerbaik2;
+    public void selection() {
+        this.populasi.hitungFitness(this.mosaic);
+        this.kromTerbaik = this.populasi.kromTerbaik;
+        this.kromTerbaikKedua = this.populasi.kromTerbaik2;
     }
     
     public void crossover() {
@@ -75,24 +76,25 @@ public class GeneticAlg {
     public void masukkanAnakTerbaik() {
          //Perbarui kegagalan tiap kromosom di atas
          //setelah dilakukan selection, crossover, mutation
-        this.kromTerbaik.hitungFitnessKromosom();
-        this.kromTerbaikKedua.hitungFitnessKromosom();
+        this.kromTerbaik.hitungFitnessKromosom(this.mosaic);
+        this.kromTerbaikKedua.hitungFitnessKromosom(this.mosaic);
         
          //Mencari index kromosom terburuk dalam populasi
         int indexKromosomTerburuk = this.populasi.cariIndexKromosomTerburuk();
         
          //Ganti kromosom terburuk dengan anak terbaik
          //dari dua anak di atas
-        if (this.kromTerbaik.gagal > this.kromTerbaikKedua.gagal) {
+        if (this.kromTerbaik.fitness > this.kromTerbaikKedua.fitness) {
             this.populasi.kromosom[indexKromosomTerburuk] = this.kromTerbaik;
         } else {
             this.populasi.kromosom[indexKromosomTerburuk] = this.kromTerbaikKedua;
         }
     }
 
-    public void getSolution(Kromosom[] initPop, int[] mobilKerja, int[] mobilMasuk, int[][] matriksTipeOption, double crossRate, double mutateRate) {
+    public void getSolution(Kromosom[] initPop, int crossRate, int mutateRate,int[][] mosaic) {
         this.populasi.kromosom = initPop;
-        this.populasi.hitungFitness();
+        this.mosaic=mosaic;
+        this.populasi.hitungFitness(this.mosaic);
 
         //crossoverRate dan mutationRate dalam satuan persen
         //Persentase menunjukkan berapa kali crossover dan mutation dilakukan
@@ -103,30 +105,29 @@ public class GeneticAlg {
         int mutationCounter = 0;
 
         int counter = 0;
-        while (this.populasi.gagal > 0 && counter < 1000) {
+        while (counter < 1000) {
             this.generationCount++;
-        this.populasi.cariDuaKromosomTerbaik();
-        this.selection(mobilKerja, mobilMasuk, matriksTipeOption);
+            this.populasi.cariDuaKromosomTerbaik();
 
-        double maxCrossover = (crossoverRate / 100) * (double) this.populasi.kromosom.length;
-        double maxMutation = (mutationRate / 100) * (double) this.populasi.kromosom.length;
+            double maxCrossover = (crossoverRate / 100) * (double) this.populasi.kromosom.length;
+            double maxMutation = (mutationRate / 100) * (double) this.populasi.kromosom.length;
 
-        if (crossoverCounter < maxCrossover) {
-            this.crossover();
-            crossoverCounter++;
-        }
-        if (mutationCounter < maxMutation) {
-            this.mutation();
-            mutationCounter++;
-        }
+            if (crossoverCounter < maxCrossover) {
+                this.crossover();
+                crossoverCounter++;
+            }
+            if (mutationCounter < maxMutation) {
+                this.mutation();
+                mutationCounter++;
+            }
 
-        //Masukkan kedua anak terbaik ke dalam populasi
-        //lalu hitung fitness populasi
-        this.masukkanAnakTerbaik();
-        this.populasi.hitungFitness();
+            //Masukkan kedua anak terbaik ke dalam populasi
+            //lalu hitung fitness populasi
+            this.masukkanAnakTerbaik();
+            this.populasi.hitungFitness(this.mosaic);
 
-        //Counter untuk membatasi iterasi
-        counter++;
+            //Counter untuk membatasi iterasi
+            counter++;
         }
     }
  }
